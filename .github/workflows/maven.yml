@@ -12,14 +12,25 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
       - name: Build with Maven
-        run: mvn install
+        run: mvn -B install
+
+      # Upload build artifacts (the built JAR/WAR) to the workflow run as attachments
+      - name: Upload Maven artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: maven-build-artifacts
+          path: |
+            target/*.jar
+            target/*.war
+          if-no-files-found: error
